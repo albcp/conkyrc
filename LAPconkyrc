@@ -1,0 +1,162 @@
+# Set to yes if you want Conky to be forked in the background
+background yes
+
+# Use Xft?
+use_xft yes
+
+# Xft font when Xft is enabled
+xftfont Bitstream Monospace:size=9
+
+# Text alpha when using Xft
+xftalpha 0.1
+
+# Update interval in seconds
+update_interval 1.0
+
+# This is the number of times Conky will update before quitting.
+# Set to zero to run forever.
+total_run_times 0
+
+# Create own window instead of using desktop (required in nautilus)
+own_window yes
+own_window_type desktop
+own_window_transparent yes
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+
+# Use double buffering (reduces flicker, may not work for everyone)
+double_buffer yes
+
+# Minimum size of text area
+minimum_size 300 0
+maximum_width 300
+
+# Draw shades?
+draw_shades no
+
+# Draw outlines?
+draw_outline no
+
+# Draw borders around text
+draw_borders no
+draw_graph_borders yes
+
+# Stippled borders?
+stippled_borders 8
+
+# border width
+border_width 1
+
+# Default colors and also border colors
+default_color white
+default_shade_color black
+default_outline_color white
+
+# Text alignment, other possible values are commented
+alignment top_right
+
+# Gap between borders of screen and text
+# same thing as passing -x at command line
+gap_x 10
+gap_y 50
+
+# Subtract file system buffers from used memory?
+no_buffers yes
+
+# set to yes if you want all text to be in uppercase
+uppercase no
+
+cpu_avg_samples 2
+net_avg_samples 2
+diskio_avg_samples 2
+
+# Force UTF8? note that UTF8 support required XFT
+override_utf8_locale yes
+
+# Add spaces to keep things from moving about?  This only affects certain objects.
+use_spacer right
+
+text_buffer_size 2048
+
+# variable is given either in format $variable or in ${variable}. Latter
+# allows characters right after the variable and must be used in network
+# stuff because of an argument
+# stuff after 'TEXT' will be formatted on screen
+
+TEXT
+
+${alignc}${color cyan}${font Monospace:style=Bold:pixelsize=35}${time %H:%M:%S}${font}${color}
+
+${alignc}${font Monospace:style=Bold:pixelsize=14}${time %A}, ${time %e} ${time %B}, ${time %G}${font}
+
+#############SYSTEM#############
+${color}${font Monospace:style=Bold:pixelsize=18}SYSTEM ${hr 2 }${font Monospace:size=9}
+
+USER: ${color}${alignr}${exec whoami}${color}
+HOSTNAME: ${color}${alignr}$nodename${color}
+KERNEL: ${color}$alignr$sysname $kernel${color}
+UPTIME: ${color green}$alignr$uptime${color}
+LOAD: ${color green}$alignr$loadavg${color}
+BATTERY: ${color green}${alignr}${if_match ${battery_percent BAT1}<=20}${color red}${else}${color green}${endif}${battery_percent BAT1}%
+
+#############CPU#############
+${color}${font Monospace:style=Bold:pixelsize=18}CPU ${hr 2 }${font Monospace:size=9}
+
+${exec cat /proc/cpuinfo | grep -Po 'model\s+name\s+:\s+\K.*?GHz' | head -1}
+
+TEMP: ${if_match ${hwmon 1 temp 1}<=60}${color green}${else}${if_match ${hwmon 1 temp 1}>=80}${color red}${else}${color yellow}${endif}${endif}$alignr${hwmon 1 temp 1}ºC${color}
+USAGE: ${if_match ${cpu cpu0}<=70}${color green}${else}${if_match ${cpu cpu0}>=90}${color red}${else}${color yellow}${endif}${endif}$alignr${cpu cpu0}%
+${color red}${cpubar cpu0 13}
+
+${color}${alignc}RUNNING PROCESSES: ${color green}$processes${font Monospace:size=9}
+
+${alignc}${color}1st ${color green}${top name 1}${top cpu 1}%
+${alignc}${color}2nd ${color green}${top name 2}${top cpu 2}%
+${alignc}${color}3rd ${color green}${top name 3}${top cpu 3}%
+${alignc}${color}4th ${color green}${top name 4}${top cpu 4}%
+${alignc}${color}5th ${color green}${top name 5}${top cpu 5}%
+${alignc}${color}6th ${color green}${top name 6}${top cpu 6}%
+
+#############MEMORY#############
+${color}${font Monospace:style=Bold:pixelsize=18}MEMORY ${hr 2 }${font Monospace:size=9}
+
+USAGE:$alignr${mem}/${memmax} ($memperc%)
+${color red}${membar 13}
+
+${alignc}${color}1st ${color green}${top_mem name 1}${top_mem mem 1}%
+${alignc}${color}2nd ${color green}${top_mem name 2}${top_mem mem 2}%
+${alignc}${color}3rd ${color green}${top_mem name 3}${top_mem mem 3}%
+${alignc}${color}4th ${color green}${top_mem name 4}${top_mem mem 4}%
+${alignc}${color}5th ${color green}${top_mem name 5}${top_mem mem 5}%
+${alignc}${color}6th ${color green}${top_mem name 6}${top_mem mem 6}%
+
+#############DISK#############
+${color}${font Monospace:style=Bold:pixelsize=18}DISK ${hr 2 }${font Monospace:size=9}
+
+/ ${alignr}${fs_used /}/${fs_size /} (${fs_used_perc /}%)
+${color red}${fs_bar 13 /}${color}
+
+/home ${alignr}${fs_used /home}/${fs_size /home} (${fs_used_perc /home}%)
+${color red}${fs_bar 13 /home}
+
+${alignc}${color}READ I/O: ${color green}${diskio_read /dev/sda} ${alignr}${color}WRITE I/O: ${color green}${diskio_write /dev/sda}
+
+#############INTERNET#############
+${color}${font Monospace:style=Bold:pixelsize=18}INTERNET ${hr 2 }
+${font Monospace:size=9}${color}VPN: ${if_empty ${exec cat /proc/net/route | grep tun0}}${color red}OFF${color}${else}${color green}ON${color}${endif}${color}
+${if_up wlp8s0}\
+SSID: ${color green}${exec iwgetid -r}${color}
+LOCAL IPv4: ${color green}${addr wlp8s0}${color}
+SIGNAL: ${color green}${wireless_link_qual_perc wlp8s0}${color}
+PING: ${color green}${execi 1.0 ping 8.8.8.8 -c 1 | grep -Po "(?<=time=)(.*?)(?=s)"}s\
+${else}${color red}WIFI OFF${endif}
+
+${color}  DOWN: ${color green}${downspeed wlp8s0}${alignr}${color}UP: ${color green}${upspeed wlp8s0}   \
+
+${color #000000}${downspeedgraph wlp8s0 12,130 000000 00ff00}${alignr}${color #000000}${upspeedgraph wlp8s0 12,130 000000 00ff00}
+${color}  TOTAL: ${color green}${totaldown wlp8s0}${alignr}${color}TOTAL: ${color green}${totalup wlp8s0}
+
+#############UPDATES#############
+${color}${font Monospace:style=Bold:pixelsize=18}UPDATES ${hr 2 }${font Monospace:size=9}${color}
+
+#${if_match ${execpi 60 checkupdates | wc -l}>=1}${blink Pending updates: ${color green}${execpi 3000 checkupdates | wc -l}}${else}Your system is updated.${endif}
+${if_match ${execpi 60 checkupdates | wc -l}>=1}Pending updates: ${color green}${execpi 3000 checkupdates | wc -l}${else}Your system is updated.${endif}
