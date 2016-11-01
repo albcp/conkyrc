@@ -154,10 +154,10 @@ ${color}${font Monospace:style=Bold:pixelsize=18}INTERNET ${hr 2 }
 ${font Monospace:size=10}
 ${color}VPN: ${if_empty ${exec cat /proc/net/route | grep tun0}}${color red}OFF${color}${else}${color green}ON${color}${endif}${color}
 ${if_up wlp7s0}\
-SSID: ${color green}${exec iwgetid -r}
-${color}IPv4 LOCAL: ${color green}${addr wlp7s0}${color}
-${color}PING: ${color green}${execi 1.0 ping 8.8.8.8 -c 1 | grep -Po "(?<=time=)(.*?)(?=s)"}s\
-${else}{color red}WIFI OFF${endif}
+SSID: ${color green}${exec iwgetid -r}${color}
+IPv4 LOCAL: ${color green}${addr wlp7s0}${color}
+PING: ${color green}${execi 1.0 ping 8.8.8.8 -c 1 | grep -Po "(?<=time=)(.*?)s"}\
+${else}${color red}WIFI OFF${endif}
 
 ${color}  DOWN: ${color green}${downspeed wlp7s0}${alignr}${color}UP: ${color green}${upspeed wlp7s0}   \
 
