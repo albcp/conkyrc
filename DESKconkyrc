@@ -105,7 +105,7 @@ ${color}${font Monospace:style=Bold:pixelsize=18}CPU ${hr 2 }
 ${font Monospace:size=10}
 ${exec cat /proc/cpuinfo | grep -Po 'model\s+name\s+:\s+\K.*?GHz' | head -1}
 
-TEMP: ${color1}$alignr${hwmon 1 temp 1}°C${color}
+TEMP: ${color1}$alignr${hwmon 0 temp 1}°C${color}
 USAGE: ${color1}$alignr${cpu cpu0}%
 ${color2}${cpubar cpu0 15}
 
@@ -159,7 +159,7 @@ ${color}VPN: ${if_empty ${exec cat /proc/net/route | grep tun0}}${color2}OFF${co
 ${if_up wlp7s0}\
 SSID: ${color1}${exec iwgetid -r}${color}
 IPv4 LOCAL: ${color1}${addr wlp7s0}${color}
-PING: ${color1}${execi 1.0 ping 8.8.8.8 -c 1 | grep -Po "(?<=time=)(.*?)s"}\
+PING: ${color1}${execi 1 sh -c 'ping 8.8.8.8 -c 1 | grep -Po "(?<=time=)(.*?)s"'}\
 ${else}${color2}WIFI OFF${endif}
 
 ${color}  DOWN: ${color1}${downspeed wlp7s0}${alignr}${color}UP: ${color1}${upspeed wlp7s0}   \
